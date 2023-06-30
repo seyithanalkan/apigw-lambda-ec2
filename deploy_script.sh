@@ -32,15 +32,22 @@ else
     echo "Serverless Framework is already installed."
 fi
 
+# Check if serverless-api-stage is installed
+if ! npm list -g --depth=0 | grep serverless-api-stage > /dev/null; then
+    # If not installed, install it
+    npm install --save-dev serverless-api-stage
+fi
+
 # Deploy the Serverless application with the 'dev' stage
+
 sls deploy -s dev
 
 # Get the AMI ID for Ubuntu image
 AMI_ID=$(aws ec2 describe-images --owners 099720109477 --filters 'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*' 'Name=virtualization-type,Values=hvm' --query 'Images[0].ImageId' --output text)
 echo "Latest Ubuntu AMI: $AMI_ID"
 
-# Get the API Gateway ID for the 'dev-ec2-create' API
-api_id=$(aws apigateway get-rest-apis --query 'items[?name==`dev-ec2-create`].id' --output text --region eu-central-1)
+# Get the API Gateway ID for the 'ec2-create-dev' API
+api_id=$(aws apigateway get-rest-apis --query 'items[?name==`ec2-create-dev`].id' --output text --region eu-central-1)
 echo "API Gateway ID: $api_id"
 
 # Construct the API URL using the API Gateway ID
@@ -59,23 +66,7 @@ echo "Security Group ID: $security_group_id"
 existing_api_key=$(aws apigateway get-api-keys --name-query "MyAPIKey" --include-values --query 'items[0].id' --output text)
 
 if [ -z "$existing_api_key" ]; then
-    # Create the API key for the API Gateway
-    api_key_response=$(aws apigateway create-api-key --name "MyAPIKey" --enabled)
-    api_key=$(echo $api_key_response | jq -r '.value')
-    echo "API Key: $api_key"
-
-    # Create the usage plan for the API Gateway
-    usage_plan_id=$(aws apigateway create-usage-plan --name "MyUsagePlan" --description "My Usage Plan" --query 'id' --output text)
-    echo "Usage Plan ID: $usage_plan_id"
-
-    # Associate the API key with the usage plan
-    aws apigateway create-usage-plan-key --usage-plan-id $usage_plan_id --key-type "API_KEY" --key-id $(echo $api_key_response | jq -r '.id')
-
-    # Associate the usage plan with the API and stage
-    aws apigateway update-stage --rest-api-id $api_id --stage-name dev --patch-operations op=add,path=/apiStages,value="${api_id}:dev"
-
-    # Deploy the API to make the changes take effect
-    aws apigateway create-deployment --rest-api-id $api_id --stage-name dev
+    echo "API Key is not found"
 else
     # API key already exists, retrieve the value
     api_key=$(aws apigateway get-api-key --api-key $existing_api_key --include-value --query 'value' --output text)

@@ -4,11 +4,6 @@ package:
   exclude:
     - ./terraform/**
 
-
-custom:
-  apiKeys:
-    - name: MyAPIKey
-
 provider:
   name: aws
   runtime: python3.8
@@ -19,8 +14,8 @@ provider:
       - ${file(./terraform/variables.json):private_subnet_id.value}  # Update the path
     securityGroupIds:
       - ${file(./terraform/variables.json):security_group_id.value}  # Update the path
-  apiKeys:
-    - ${self:custom.apiKeys.0.name}
+  apiGateway:
+    shouldStartNameWithService: true
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -37,10 +32,48 @@ provider:
 functions:
   createInstance:
     handler: handler.create_instance
-    timeout: 60 
+    timeout: 25  # Reduce to 30 seconds to match API Gateway limit
     events:
       - http:
           path: create
           method: post
           private: true
           cors: true
+
+resources:
+  Resources:
+    MyAPIKey:
+      Type: "AWS::ApiGateway::ApiKey"
+      Properties:
+        Name: MyAPIKey
+        Enabled: true
+        StageKeys:
+          - RestApiId: 
+              Ref: ApiGatewayRestApi
+            StageName: dev
+    MyUsagePlan:
+      Type: "AWS::ApiGateway::UsagePlan"
+      DependsOn: MyAPIKey
+      Properties:
+        ApiStages:
+          - ApiId: 
+              Ref: ApiGatewayRestApi
+            Stage: dev
+        Description: My Usage Plan
+        Quota:
+          Limit: 5000
+          Offset: 2
+          Period: MONTH
+        Throttle:
+          BurstLimit: 200
+          RateLimit: 100
+        UsagePlanName: MyUsagePlan
+    MyUsagePlanKey:
+      Type: "AWS::ApiGateway::UsagePlanKey"
+      DependsOn: MyUsagePlan
+      Properties:
+        KeyId:
+          Ref: MyAPIKey
+        KeyType: API_KEY
+        UsagePlanId:
+          Ref: MyUsagePlan
