@@ -1,8 +1,13 @@
-service: ec2
+service: ec2-create
 
 package:
   exclude:
     - ./terraform/**
+
+
+custom:
+  apiKeys:
+    - name: MyAPIKey
 
 provider:
   name: aws
@@ -11,28 +16,31 @@ provider:
   region: eu-central-1
   vpc:
     subnetIds:
-      - ${file(./terraform/variables.json):subnet_id.value}  # Update the path
+      - ${file(./terraform/variables.json):private_subnet_id.value}  # Update the path
     securityGroupIds:
       - ${file(./terraform/variables.json):security_group_id.value}  # Update the path
+  apiKeys:
+    - ${self:custom.apiKeys.0.name}
   iamRoleStatements:
-  - Effect: "Allow"
-    Action:
-      - "ec2:RunInstances"
-      - "ec2:DescribeInstances"
-      - "ec2:DescribeSubnets"
-      - "ec2:DescribeSecurityGroups"
-      - "ec2:CreateNetworkInterface"
-      - "ec2:DeleteNetworkInterface"
-      - "ec2:DescribeNetworkInterfaces"
-      - "ec2:CreateTags"
-    Resource: "*"
-
+    - Effect: "Allow"
+      Action:
+        - "ec2:RunInstances"
+        - "ec2:DescribeInstances"
+        - "ec2:DescribeSubnets"
+        - "ec2:DescribeSecurityGroups"
+        - "ec2:CreateNetworkInterface"
+        - "ec2:DeleteNetworkInterface"
+        - "ec2:DescribeNetworkInterfaces"
+        - "ec2:CreateTags"
+      Resource: "*"
 
 functions:
   createInstance:
     handler: handler.create_instance
+    timeout: 60 
     events:
       - http:
           path: create
           method: post
+          private: true
           cors: true
