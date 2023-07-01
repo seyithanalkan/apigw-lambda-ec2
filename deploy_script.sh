@@ -148,6 +148,11 @@ function create {
 }
 
 function remove {
+    #Terraform init before removing
+    cd terraform
+    terraform init
+    cd ..
+
     # Terminate instances created by Lambda
     aws ec2 describe-instances --query 'Reservations[*].Instances[*].[InstanceId,Tags[?Key==`CreatedBy`].Value]' --output text | while read instance_id created_by; do
         if [ "$created_by" = "lambda" ]; then
