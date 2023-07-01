@@ -2,7 +2,9 @@ service: ec2-create
 
 package:
   exclude:
-    - ./terraform/**
+    - '**'
+  include:
+    - 'handler.py'
 
 provider:
   name: aws
@@ -32,48 +34,10 @@ provider:
 functions:
   createInstance:
     handler: handler.create_instance
-    timeout: 25  # Reduce to 30 seconds to match API Gateway limit
+    timeout: 30  # Reduce to 30 seconds to match API Gateway limit
     events:
       - http:
           path: create
           method: post
           private: true
           cors: true
-
-resources:
-  Resources:
-    MyAPIKey:
-      Type: "AWS::ApiGateway::ApiKey"
-      Properties:
-        Name: MyAPIKey
-        Enabled: true
-        StageKeys:
-          - RestApiId: 
-              Ref: ApiGatewayRestApi
-            StageName: dev
-    MyUsagePlan:
-      Type: "AWS::ApiGateway::UsagePlan"
-      DependsOn: MyAPIKey
-      Properties:
-        ApiStages:
-          - ApiId: 
-              Ref: ApiGatewayRestApi
-            Stage: dev
-        Description: My Usage Plan
-        Quota:
-          Limit: 5000
-          Offset: 2
-          Period: MONTH
-        Throttle:
-          BurstLimit: 200
-          RateLimit: 100
-        UsagePlanName: MyUsagePlan
-    MyUsagePlanKey:
-      Type: "AWS::ApiGateway::UsagePlanKey"
-      DependsOn: MyUsagePlan
-      Properties:
-        KeyId:
-          Ref: MyAPIKey
-        KeyType: API_KEY
-        UsagePlanId:
-          Ref: MyUsagePlan

@@ -34,7 +34,18 @@ def create_instance(event, context):
                 'AssociatePublicIpAddress': True
             }
         ],
-        UserData=user_data
+        UserData=user_data,
+        TagSpecifications=[
+            {
+                'ResourceType': 'instance',
+                'Tags': [
+                    {
+                        'Key': 'CreatedBy',
+                        'Value': 'Lambda'
+                    }
+                ]
+            }
+        ]
     )
 
     # Wait for the instance to be running
