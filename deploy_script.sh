@@ -154,12 +154,11 @@ function remove {
     cd ..
 
     # Terminate instances created by Lambda
-    aws ec2 describe-instances --query 'Reservations[*].Instances[*].[InstanceId,Tags[?Key==`CreatedBy`].Value]' --output text | while read instance_id created_by; do
-        if [ "$created_by" = "lambda" ]; then
-            aws ec2 terminate-instances --instance-ids $instance_id
-            echo "Terminated instance: $instance_id"
-        fi
+    aws ec2 describe-instances --query 'Reservations[].Instances[?Tags[?Key==`CreatedBy` && Value==`Lambda`]].InstanceId' --output text | while read -r instance_id; do
+        aws ec2 terminate-instances --instance-ids "$instance_id"
+        echo "Terminated instance: $instance_id"
     done
+
 
     # Remove the Serverless application and destroy Terraform resources in parallel
     (sls remove && echo "Serverless application removed.") &
