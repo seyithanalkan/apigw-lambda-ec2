@@ -29,9 +29,9 @@ chmod +x deploy-script.sh
 ```bash
 sls  deploy  -s  dev
 ```
-4. **CloudFormation Creates API Key:** The script substitutes **`<existing-api-gateway-id>`**  with the actual API Gateway ID in the  **`apikey-temp.yaml`** file using **`sed`**. It then deploys the stack using this file containing configurations to create an API key.
+3. **CloudFormation Creates API Key:** The script substitutes **`<existing-api-gateway-id>`**  with the actual API Gateway ID in the  **`apikey-temp.yaml`** file using **`sed`**. It then deploys the stack using this file containing configurations to create an API key.
 
-5. **Send POST Request with Curl Including API Key and JSON Body, Then Lambda Function Gets Dynamic Parameters:** After deploying the infrastructure, you can trigger the Lambda function by sending a POST request to the API Gateway. This request should include the API key in the header and a JSON body that contains the parameters for the EC2 instance to be created.
+4. **Send POST Request with Curl Including API Key and JSON Body, Then Lambda Function Gets Dynamic Parameters:** After deploying the infrastructure, you can trigger the Lambda function by sending a POST request to the API Gateway. This request should include the API key in the header and a JSON body that contains the parameters for the EC2 instance to be created.
 #### Bash
 ```bash
 curl  -X POST -H "x-api-key: $api_key" -H "Content-Type: application/json" -d '{
@@ -48,9 +48,9 @@ curl  -X POST -H "x-api-key: $api_key" -H "Content-Type: application/json" -d '{
 
 }' $api_url
 ```
-7. **Lambda Creates EC2 Instance with Nginx Installed:** The Lambda function uses the parameters from the POST request to spin up an EC2 instance running Nginx. The function has the necessary permissions for creating and managing EC2 instances, as specified in the **`serverless.yml`** file.
-8. **`deploy_script.sh`** **Returns Public IP of EC2:** Once the EC2 instance is up and running, the **`deploy_script.sh`** script outputs its public IP address. You can use this address to connect to the Nginx server running on the EC2 instance.
-9. **Website Is Accessible from http://<public-ip>:** Finally, access the Nginx server by navigating to **`http://<public-ip>`** in your web browser.
+5. **Lambda Creates EC2 Instance with Nginx Installed:** The Lambda function uses the parameters from the POST request to spin up an EC2 instance running Nginx. The function has the necessary permissions for creating and managing EC2 instances, as specified in the **`serverless.yml`** file.
+6. **`deploy_script.sh`** **Returns Public IP of EC2:** Once the EC2 instance is up and running, the **`deploy_script.sh`** script outputs its public IP address. You can use this address to connect to the Nginx server running on the EC2 instance.
+7. **Website Is Accessible from http://<public-ip>:** Finally, access the Nginx server by navigating to **`http://<public-ip>`** in your web browser.
 
 ## Uninstallation
 
