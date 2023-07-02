@@ -52,6 +52,21 @@ curl  -X POST -H "x-api-key: $api_key" -H "Content-Type: application/json" -d '{
 6. **`deploy_script.sh`** **Returns Public IP of EC2:** Once the EC2 instance is up and running, the **`deploy_script.sh`** script outputs its public IP address. You can use this address to connect to the Nginx server running on the EC2 instance.
 7. **Website Is Accessible from http://<public-ip>:** Finally, access the Nginx server by navigating to **`http://<public-ip>`** in your web browser.
 
+## Output
+
+Check the link below:
+
+https://app.warp.dev/block/nzdB77y4wAQFzcsYXRvvpG
+
+
+## Screenshots
+
+![Output](https://drive.google.com/uc?export=view&id=1i62dj267R3Q4xOOenFIIRMrYfe28Eb1J)
+![Apigw](https://drive.google.com/uc?export=view&id=1KDWl5UN2lxgYKNXMM6HoRPYHPay7xrPZ)
+![EC2-Instance](https://drive.google.com/uc?export=view&id=168f1TRyTj4CLo3-bGLBNS1K4I8nAlXNb)
+![Website](https://drive.google.com/uc?export=view&id=1WjZMohigRe0y1VZmkYLL9ejSEUEQQxd3)
+
+
 ## Uninstallation
 
 To uninstall the project, execute the **`./deploy_script.sh remove`** command.
