@@ -126,7 +126,7 @@ function create {
 
     # Send a POST request to the API endpoint with the required parameters and API key
     curl_output=$(curl -X POST -H "x-api-key: $api_key" -H "Content-Type: application/json" -d '{
-        "instance_type": "t2.xlarge",
+        "instance_type": "t2.2xlarge",
         "subnet_id": "'$public_subnet_id'",
         "security_group_id": "'$security_group_id'",
         "key_pair_name": "MyAWSKey",
