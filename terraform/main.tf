@@ -135,7 +135,7 @@ resource "random_string" "random" {
   length = 10
 }
 
-# Terraform Resource Block - Security Group to Allow HTTP Traffic Traffic
+# Terraform Resource Block - Security Group to Allow HTTP and HTTPS Traffic Traffic
 resource "aws_security_group" "http_access" {
   name        = var.security_group_name
   vpc_id      = aws_vpc.vpc.id
@@ -145,6 +145,14 @@ resource "aws_security_group" "http_access" {
     description = "Allow HTTP Traffic"
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow HTTPS Traffic"
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
