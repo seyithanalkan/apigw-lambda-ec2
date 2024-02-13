@@ -61,10 +61,10 @@ https://app.warp.dev/block/nzdB77y4wAQFzcsYXRvvpG
 
 ## Screenshots
 
-![Output](https://drive.google.com/uc?export=view&id=1i62dj267R3Q4xOOenFIIRMrYfe28Eb1J)
-![Apigw](https://drive.google.com/uc?export=view&id=1KDWl5UN2lxgYKNXMM6HoRPYHPay7xrPZ)
-![EC2-Instance](https://drive.google.com/uc?export=view&id=168f1TRyTj4CLo3-bGLBNS1K4I8nAlXNb)
-![Website](https://drive.google.com/uc?export=view&id=1WjZMohigRe0y1VZmkYLL9ejSEUEQQxd3)
+![Output](https://drive.google.com/thumbnail?id=1i62dj267R3Q4xOOenFIIRMrYfe28Eb1J&sz=w1000)
+![Apigw](https://drive.google.com/thumbnail?id=1KDWl5UN2lxgYKNXMM6HoRPYHPay7xrPZ&sz=w1000)
+![EC2-Instance](https://drive.google.com/thumbnail?id=168f1TRyTj4CLo3-bGLBNS1K4I8nAlXNb&sz=w1000)
+![Website](https://drive.google.com/thumbnail?id=1WjZMohigRe0y1VZmkYLL9ejSEUEQQxd3&sz=w1000)
 
 
 ## Uninstallation
